@@ -56,7 +56,6 @@ fun PostDetailPage() {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-        }
             val stateSnap = state
             when (stateSnap) {
                 is ErrorState ->  Box(
@@ -110,56 +109,57 @@ fun PostDetailPage() {
                 }
             }
         }
-
     }
 
-    @Composable
-    fun PostCommentListTitle() {
-        OutlinedCard(
+}
+
+@Composable
+fun PostCommentListTitle() {
+    OutlinedCard(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 8.dp)
+    ) {
+        Column(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 8.dp)
+                .padding(16.dp)
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("id labore ex et quam laborum")
-                    Badge(Modifier.weight(1f)) {
-                        Text("jayne_kuhic@sydney.com", maxLines = 1)
-                    }
+                Text("id labore ex et quam laborum")
+                Badge(Modifier.weight(1f)) {
+                    Text("jayne_kuhic@sydney.com", maxLines = 1)
                 }
             }
-
         }
+
     }
+}
 
-    suspend fun fetchPostDetail(postId: String) {
-        delay(4.seconds)
-        PostDetail(
-            id = "1",
-            title = "dhsakhdgsahijhdkjashdkjsahdkjsa",
-            body = "djakshdkashdkjasnckzxncy7wquew98u1927321731",
-            comments = emptyList()
-        )
-    }
-
-    data class PostDetail(
-        val id: String,
-        val title: String,
-        val body: String,
-        val comments: List<PostComment>,
+suspend fun fetchPostDetail(postId: String) {
+    delay(4.seconds)
+    PostDetail(
+        id = "1",
+        title = "dhsakhdgsahijhdkjashdkjsahdkjsa",
+        body = "djakshdkashdkjasnckzxncy7wquew98u1927321731",
+        comments = emptyList()
     )
+}
 
-    data class PostComment(
-        val title: String,
-        val commenterEmail: String,
-        val comment: String
-    )
+data class PostDetail(
+    val id: String,
+    val title: String,
+    val body: String,
+    val comments: List<PostComment>,
+)
+
+data class PostComment(
+    val title: String,
+    val commenterEmail: String,
+    val comment: String
+)

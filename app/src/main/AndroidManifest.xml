@@ -25,6 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PostDetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_post_detail"
+            android:theme="@style/Theme.FeedSocialMedia"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

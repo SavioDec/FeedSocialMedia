@@ -1,11 +1,11 @@
 package com.example.feedsocialmedia
 
-sealed class SuspendState
+sealed class SuspendState<out SuccessDataType>
 
 //class IdleState: SuspendState ()
 
-class LoadingState : SuspendState()
+data object LoadingState : SuspendState<Nothing>()
 
-class ErrorState(val errorMessage: String) : SuspendState()
+class ErrorState(val errorMessage: String) : SuspendState<Nothing>()
 
-class SuccessState<DataType>(val data: DataType ) : SuspendState()
+class SuccessState<out T>(val data: T ) : SuspendState<T>()

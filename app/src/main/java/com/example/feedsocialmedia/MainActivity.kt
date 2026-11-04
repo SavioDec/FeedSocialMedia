@@ -27,12 +27,14 @@ package com.example.feedsocialmedia
  * (Os imports cinza no Android Studio são os que não estão sendo usados.)
  * ---------------------------------------------------------------------
  */
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.experimental.Experimental
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -113,7 +115,12 @@ class MainActivity : ComponentActivity() {
             // Aplica o tema do app (cores e fontes, definidos em ui/theme).
             FeedSocialMediaTheme {
                 // A página que lista os posts (definida logo abaixo).
-                PostListPage()
+                PostListPage() { post ->
+                    val intent = Intent(this, PostDetailActivity::class.java)
+                    // pass id to PostDetailActivity
+                    intent.putExtra("post_id", post.id.toString())
+                    startActivity(intent)
+                }
             }
         }
     }
@@ -141,7 +148,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun PostListPage() {
+fun PostListPage(onPostClick: (PostListItem) -> Unit = {}) {
 
     /*
      * posts: a lista de posts baixada da API.
@@ -216,10 +223,8 @@ fun PostListPage() {
                                 errorMessage = null
                                 try {
                                     posts = downloadPosts()
-                                    posts = null
                                 } catch (_: Exception) {
                                     errorMessage = "Nao foi possivel baixar os posts"
-                                    errorMessage = null
                                 }
                             }
                         }) {
@@ -286,7 +291,7 @@ fun PostListPage() {
                  */
                 items(posts ?: emptyList(), key = { it.id }) { post ->
                     // Desenha o "cartão" de um post (função logo abaixo).
-                    PostListTile(post)
+                    PostListTile(post) { onPostClick(post) }
 
                 }
             }
@@ -302,12 +307,15 @@ fun PostListPage() {
  * @param post o post que vai ser mostrado (vem do items(...) acima).
  */
 @Composable
-fun PostListTile(post: PostListItem) {
+fun PostListTile(post: PostListItem, onClick: () -> Unit) {
     /*
      * Column empilha os filhos na vertical.
      * fillMaxWidth() = ocupa toda a largura, mas só a altura que precisa.
      */
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth().clickable {
+        Log.d("myTag", "Post ${post.title} was clicked")
+        onClick()
+    }) {
 
         /*
          * Linha de cabeçalho. ${...} coloca o valor da variável dentro do texto
@@ -373,12 +381,6 @@ data class PostListItem(
  *         capturada pelo try/catch em PostListPage.
  */
 suspend fun downloadPosts(): List<PostListItem> = withContext(Dispatchers.IO) {
-    /*
-     * Espera 4 segundos de propósito, só para dar tempo de VER o "carregando"
-     * na tela. Num app de verdade, esta linha seria removida.
-     */
-    delay(4.seconds)
-
     /*
      * jsonRaw: o texto cru da resposta, ou seja, o JSON inteiro como String.
      * URL(...).readText() faz um GET simples e lê tudo.

@@ -67,6 +67,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import java.net.URL
 import kotlin.time.Duration.Companion.seconds
@@ -347,22 +348,7 @@ fun PostListTile(post: PostListItem, onClick: () -> Unit) {
  * #####################################################################
  */
 
-/**
- * PostListItem
- * ------------
- * MODELO de um post: o "molde" que representa cada item do JSON da API.
- * "data class" = classe feita só para guardar dados. O Kotlin já gera
- * equals, toString e copy automaticamente.
- *
- * Cada campo corresponde a uma chave do JSON de
- * https://jsonplaceholder.typicode.com/posts
- */
-data class PostListItem(
-    val userId: Int,    // id do usuário que escreveu o post
-    val id: Int,        // id único do post (usado como "key" na LazyColumn)
-    val title: String,  // título do post
-    val body: String    // texto (conteúdo) do post
-)
+
 
 /**
  * downloadPosts
@@ -380,6 +366,7 @@ data class PostListItem(
  * @return a lista de posts. Se algo falhar, lança uma exceção, que é
  *         capturada pelo try/catch em PostListPage.
  */
+
 suspend fun downloadPosts(): List<PostListItem> = withContext(Dispatchers.IO) {
     /*
      * jsonRaw: o texto cru da resposta, ou seja, o JSON inteiro como String.
@@ -415,3 +402,21 @@ suspend fun downloadPosts(): List<PostListItem> = withContext(Dispatchers.IO) {
         )
     }
 }
+
+/**
+ * PostListItem
+ * ------------
+ * MODELO de um post: o "molde" que representa cada item do JSON da API.
+ * "data class" = classe feita só para guardar dados. O Kotlin já gera
+ * equals, toString e copy automaticamente.
+ *
+ * Cada campo corresponde a uma chave do JSON de
+ * https://jsonplaceholder.typicode.com/posts
+ */
+@Serializable
+data class PostListItem(
+    val userId: Int,    // id do usuário que escreveu o post
+    val id: Int,        // id único do post (usado como "key" na LazyColumn)
+    val title: String,  // título do post
+    val body: String    // texto (conteúdo) do post
+)
